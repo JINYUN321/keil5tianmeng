@@ -1,5 +1,10 @@
 ﻿# 天猛星 MSPM0G3507 Keil5 模板
+13232
+3
 
+
+65
+5
 本模板面向网表 `Netlist_Schematic1_2026-07-22.tel` 对应的天猛星 MSPM0G3507 底板，使用 ARM Compiler 5.06 和手动外设初始化。默认固件只初始化 80 MHz 系统时钟并点亮底板 LED1，不初始化电机、PWM、编码器、UART、OLED 或 MPU6050。
 
 ## 启动与默认 LED
