@@ -435,6 +435,16 @@
               <FilePath>..\code\robot_config.h</FilePath>
             </File>
             <File>
+              <FileName>hmi_control.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\code\hmi_control.c</FilePath>
+            </File>
+            <File>
+              <FileName>hmi_control.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\code\hmi_control.h</FilePath>
+            </File>
+            <File>
               <FileName>vision.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\code\vision.c</FilePath>

@@ -1,5 +1,5 @@
 ﻿# 天猛星 MSPM0G3507 激光绘图小车
-本工程面向立创天猛星 TI MSPM0G3507 核心板及配套扩展板，使用 ARM Compiler 5.06 和手动外设初始化。当前固件已经接入 MAIXCAM PRO 数字识别、LF04 四路红外循迹、双电机编码器闭环、差速绘圆、OLED 状态显示、中键启动/急停和返回停车区；不使用 MPU6050，也不控制外部激光电源。接线、状态机、标定步骤和故障码见 `ROBOT_SETUP.md`。
+本工程面向立创天猛星 TI MSPM0G3507 核心板及配套扩展板，使用 ARM Compiler 5.06 和手动外设初始化。当前固件已经接入 MAIXCAM PRO 数字识别、串口屏按钮启动、LF04 四路红外循迹、双电机编码器闭环、差速绘圆、OLED 状态显示、中键启动/急停和返回停车区；不使用 MPU6050，也不控制外部激光电源。逐脚接线和安全上电顺序见 `WIRING.md`，状态机、标定步骤和故障码见 `ROBOT_SETUP.md`。
 
 ## 启动与任务入口
 
@@ -10,8 +10,8 @@ Reset_Handler -> ARMCC __main -> main -> system_init -> robot_mission_init
 ```
 
 - `system_init()` 复位并使能 GPIOA/GPIOB，使用 SYSOSC 驱动 SYSPLL，将 MCLK 配置为 80 MHz。
-- `robot_mission_init()` 初始化 LED、中键、电机、编码器、LF04、UART1、OLED、PID 和 10 ms 控制定时器。
-- 上电后 LF04 在停车区白底上自动学习四路白色电平；OLED 显示 `WAIT START`，按中键启动，再按一次急停。
+- `robot_mission_init()` 初始化 LED、中键、电机、编码器、LF04、UART1串口屏、UART2视觉、OLED、PID 和 10 ms 控制定时器。
+- 上电后 LF04 在停车区白底上自动学习四路白色电平；OLED 显示 `WAIT START`，点击串口屏按钮或按中键启动，运行中中键仍可急停。
 - LED1 阳极经 1 kΩ 限流电阻连接 3.3 V，阴极连接 PB14，因此 PB14 低电平点亮、高电平熄灭。
 - 核心板 LED 位于 PB22，但 PB22 同时连接 `IMU_MOSI`，因此不作为默认 LED。
 - `ti_msp_dl_config.c/.h` 和 `empty.syscfg` 仅作参考，不参与 Keil 工程编译，也不得与 `system_init()` 混用。
@@ -25,8 +25,8 @@ Reset_Handler -> ARMCC __main -> main -> system_init -> robot_mission_init
 | LED3 | PA22 / PINCM47 | 低电平有效 |
 | 核心板 LED | PB22 / PINCM50 | 低电平有效，与 IMU_MOSI 冲突 |
 | UART0 | PA10 TX、PA11 RX | 默认 `printf` 目标，4 MHz MFCLK |
-| UART1 | PA8 TX、PA9 RX | 按需初始化 |
-| UART2 | PB15 TX、PB16 RX | 按需初始化 |
+| UART1 | PA8 TX、PA9 RX | 串口屏，115200、8N1 |
+| UART2 | PB15 TX、PB16 RX | MAIXCAM，115200、8N1 |
 | UART3 | PA26 TX、PB13 RX | PA26 与 TIMG8_CH0 冲突 |
 | OLED 软件 I2C | PB2 SCL、PB3 SDA | SSD1306，7 位地址 0x3C |
 | MPU6050 软件 I2C | PA1 SCL、PA0 SDA | 7 位地址 0x68 |

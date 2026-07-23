@@ -2,6 +2,7 @@
 
 #include <stdbool.h>
 
+#include "hmi_control.h"
 #include "line_sensor.h"
 #include "ml_board.h"
 #include "ml_gpio.h"
@@ -201,8 +202,27 @@ static void mission_drain_vision_uart(void)
 {
     uint8_t byte;
 
-    while (uart_try_read(UART1, &byte) == ML_STATUS_OK) {
+    while (uart_try_read(ROBOT_VISION_UART, &byte) == ML_STATUS_OK) {
         vision_feed_byte(byte);
+    }
+}
+
+static void mission_drain_hmi_uart(void)
+{
+    uint8_t byte;
+
+    while (uart_try_read(ROBOT_HMI_UART, &byte) == ML_STATUS_OK) {
+        hmi_control_feed_byte(byte);
+    }
+}
+
+static void mission_handle_hmi_start(void)
+{
+    if (!hmi_control_take_start_request()) {
+        return;
+    }
+    if (g_mission.state == MISSION_STATE_WAIT_START) {
+        mission_begin();
     }
 }
 
@@ -355,7 +375,10 @@ ml_status_t robot_mission_init(void)
         status = line_sensor_calibrate_white(64U, 2U);
     }
     if (status == ML_STATUS_OK) {
-        status = uart_init(UART1, ROBOT_VISION_BAUD, 2U);
+        status = uart_init(ROBOT_HMI_UART, ROBOT_HMI_BAUD, 2U);
+    }
+    if (status == ML_STATUS_OK) {
+        status = uart_init(ROBOT_VISION_UART, ROBOT_VISION_BAUD, 2U);
     }
     if (status == ML_STATUS_OK) {
         status = OLED_Init();
@@ -363,6 +386,7 @@ ml_status_t robot_mission_init(void)
             g_mission.oled_ready = true;
         }
     }
+    hmi_control_init();
     vision_init();
     if (status == ML_STATUS_OK) {
         status = motion_init(&g_robot_calibration);
@@ -383,8 +407,10 @@ ml_status_t robot_mission_init(void)
 
 void robot_mission_poll(void)
 {
+    mission_drain_hmi_uart();
     mission_drain_vision_uart();
     mission_handle_time();
+    mission_handle_hmi_start();
     mission_advance();
     mission_show_periodic();
 }

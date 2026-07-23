@@ -5,6 +5,12 @@
 
 #define ROBOT_CONTROL_TICK_MS             (10U)
 #define ROBOT_SPEED_TICK_DIVIDER          (2U)
+#define ROBOT_HMI_UART                    (UART1)
+#define ROBOT_HMI_BAUD                    (115200UL)
+#define ROBOT_HMI_START_BYTE              (0x31U)
+#define ROBOT_HMI_START_CR                (0x0DU)
+#define ROBOT_HMI_START_LF                (0x0AU)
+#define ROBOT_VISION_UART                 (UART2)
 #define ROBOT_VISION_BAUD                 (115200UL)
 
 #define ROBOT_APPROACH_SPEED_MM_S         (80.0f)
