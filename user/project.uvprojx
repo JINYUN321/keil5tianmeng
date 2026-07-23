@@ -424,6 +424,56 @@
               <FileType>5</FileType>
               <FilePath>..\code\pid.h</FilePath>
             </File>
+            <File>
+              <FileName>robot_config.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\code\robot_config.c</FilePath>
+            </File>
+            <File>
+              <FileName>robot_config.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\code\robot_config.h</FilePath>
+            </File>
+            <File>
+              <FileName>vision.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\code\vision.c</FilePath>
+            </File>
+            <File>
+              <FileName>vision.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\code\vision.h</FilePath>
+            </File>
+            <File>
+              <FileName>line_sensor.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\code\line_sensor.c</FilePath>
+            </File>
+            <File>
+              <FileName>line_sensor.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\code\line_sensor.h</FilePath>
+            </File>
+            <File>
+              <FileName>motion_control.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\code\motion_control.c</FilePath>
+            </File>
+            <File>
+              <FileName>motion_control.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\code\motion_control.h</FilePath>
+            </File>
+            <File>
+              <FileName>robot_mission.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\code\robot_mission.c</FilePath>
+            </File>
+            <File>
+              <FileName>robot_mission.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\code\robot_mission.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

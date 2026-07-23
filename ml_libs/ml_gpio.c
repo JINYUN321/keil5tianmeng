@@ -62,6 +62,10 @@ ml_status_t gpio_init(
         DL_GPIO_initDigitalInputFeatures((uint32_t) gpion,
             DL_GPIO_INVERSION_DISABLE, DL_GPIO_RESISTOR_PULL_UP,
             DL_GPIO_HYSTERESIS_DISABLE, DL_GPIO_WAKEUP_DISABLE);
+    } else if (mode == IN_FLOAT) {
+        DL_GPIO_initDigitalInputFeatures((uint32_t) gpion,
+            DL_GPIO_INVERSION_DISABLE, DL_GPIO_RESISTOR_NONE,
+            DL_GPIO_HYSTERESIS_ENABLE, DL_GPIO_WAKEUP_DISABLE);
     } else {
         return ML_STATUS_INVALID_ARGUMENT;
     }

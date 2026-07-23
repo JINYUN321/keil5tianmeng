@@ -1,22 +1,17 @@
-﻿# 天猛星 MSPM0G3507 Keil5 模板
-13232
-3
+﻿# 天猛星 MSPM0G3507 激光绘图小车
+本工程面向立创天猛星 TI MSPM0G3507 核心板及配套扩展板，使用 ARM Compiler 5.06 和手动外设初始化。当前固件已经接入 MAIXCAM PRO 数字识别、LF04 四路红外循迹、双电机编码器闭环、差速绘圆、OLED 状态显示、中键启动/急停和返回停车区；不使用 MPU6050，也不控制外部激光电源。接线、状态机、标定步骤和故障码见 `ROBOT_SETUP.md`。
 
-
-65
-5
-本模板面向网表 `Netlist_Schematic1_2026-07-22.tel` 对应的天猛星 MSPM0G3507 底板，使用 ARM Compiler 5.06 和手动外设初始化。默认固件只初始化 80 MHz 系统时钟并点亮底板 LED1，不初始化电机、PWM、编码器、UART、OLED 或 MPU6050。
-
-## 启动与默认 LED
+## 启动与任务入口
 
 启动链如下：
 
 ```text
-Reset_Handler -> ARMCC __main -> main -> system_init -> board_led_init
+Reset_Handler -> ARMCC __main -> main -> system_init -> robot_mission_init
 ```
 
 - `system_init()` 复位并使能 GPIOA/GPIOB，使用 SYSOSC 驱动 SYSPLL，将 MCLK 配置为 80 MHz。
-- `board_led_init()` 将 PB14 配置为 GPIO 输出并输出低电平，使 LED1 常亮。
+- `robot_mission_init()` 初始化 LED、中键、电机、编码器、LF04、UART1、OLED、PID 和 10 ms 控制定时器。
+- 上电后 LF04 在停车区白底上自动学习四路白色电平；OLED 显示 `WAIT START`，按中键启动，再按一次急停。
 - LED1 阳极经 1 kΩ 限流电阻连接 3.3 V，阴极连接 PB14，因此 PB14 低电平点亮、高电平熄灭。
 - 核心板 LED 位于 PB22，但 PB22 同时连接 `IMU_MOSI`，因此不作为默认 LED。
 - `ti_msp_dl_config.c/.h` 和 `empty.syscfg` 仅作参考，不参与 Keil 工程编译，也不得与 `system_init()` 混用。
@@ -90,7 +85,8 @@ Reset_Handler -> ARMCC __main -> main -> system_init -> board_led_init
 - EXTI 同时支持 PA0-PA27 与 PB0-PB27；共享 `GROUP1_IRQHandler` 会分别处理 GPIOA 和 GPIOB 的全部待处理中断。
 - UART RX 使用 64 字节环形缓冲区；满时丢弃新字节并累计溢出次数。
 - 电机初始化先设置四个方向脚和两个 PWM 通道为安全零输出，接通电机电源前应先完成空载波形检查。
-- 编码器计数为 `volatile int32_t`，应用应使用 `encoder_get_and_clear()` 原子读取并清零。
+ - 编码器计数为 `volatile int32_t`，应用应使用 `encoder_get_and_clear()` 原子读取并清零。当前驱动在 A 相下降沿 1×计数；MG310 的 13 PPR、1:20 减速比对应 260 tick/轮圈，48 mm 名义轮径的理论值为 0.57999 mm/tick，正式运行仍以左右轮实测值为准。
+ - 扩展板电源按三条电源轨使用：12 V 给 TB6612 `VM`/电机，5 V 给核心板逻辑、OLED 和 TB6612 `VCC/STBY`，3.3 V 飞线给 LF04 与编码器；不要把单一电压同时接到所有端子。
 
 ## 构建与验收
 
@@ -104,5 +100,6 @@ F:\\xinkil\\UV4\\UV4.exe -r user\\project.uvprojx -j0
 
 - 构建结果为 `0 Error(s), 0 Warning(s)`。
 - 含中文的 `.c/.h` 文件为 UTF-8 BOM，注释不存在乱码或替换字符。
-- 默认链接结果移除了未使用的 `motor_init`、`pid_control`、`OLED_Init`、`MPU6050_Init` 和 `SYSCFG_DL_init`。
-- 硬件首先验收 LED1 PB14 常亮，再逐项验证 UART、OLED、IMU I2C、PWM 和 GPIOB 编码器中断。
+- 链接结果移除了未使用的 `pid_control`、`MPU6050_Init`、`MPU6050_GetData` 和 `SYSCFG_DL_init`。
+- 烧录前必须完成 `ROBOT_SETUP.md` 中的左右轮、传感器至轮轴距离、有效轮距和圆周补偿标定。
+- 硬件按“架空轮胎 → 低速直线 → A 点横线 → 单半径圆 → 完整任务”的顺序逐级验收。

@@ -6,7 +6,8 @@
 typedef enum {
     OUT = 0,
     IN_UP,
-    IN_DOWN
+    IN_DOWN,
+    IN_FLOAT
 } GPIO_Mode_enum;
 
 typedef enum {

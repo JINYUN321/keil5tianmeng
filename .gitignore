@@ -1,0 +1,21 @@
+# Keil/uVision generated build outputs
+user/Objects/
+user/Listings/
+
+# Per-user uVision workspace settings
+user/*.uvoptx
+user/*.uvguix.s
+
+# Common embedded build outputs
+*.axf
+*.hex
+*.elf
+*.map
+*.lst
+*.lnp
+*.dep
+*.d
+*.o
+*.obj
+*.crf
+*.htm
