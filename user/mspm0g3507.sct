@@ -20,15 +20,3 @@ LR_FLASH_PADDING 0x0001FFFC 0x00000004  {
     flash_padding.o (+RO)
   }
 }
-
-LR_BCR 0x41C00000 0x00000100  {    ; load region size_region
-  BCR_CONFIG 0x41C00000 0x00000080{
-	.ANY (.BCRConfig)
-  }
-}
-
-LR_BSL 0x41C00100 0x00000100  {    ; load region size_region
-   BSL_CONFIG 0x41C00100 0x00000080{
-	.ANY (.BSLConfig)
-  }
-}
